@@ -1,4 +1,4 @@
-from models import *
+from principal_RBM_alpha import *
 from utils import *
 import matplotlib.pyplot as plt
 
