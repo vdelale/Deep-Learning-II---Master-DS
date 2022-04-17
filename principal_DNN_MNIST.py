@@ -1,4 +1,3 @@
-from hashlib import new
 from principal_DBN_alpha import *
 
 def cross_entropy(y_hat, y):
