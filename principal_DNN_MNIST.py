@@ -18,9 +18,9 @@ class DNN(DBN):
     def entree_sortie_reseau(self, data):
         outputs = [data]
         for rbm in self.RBMs_list[:-1]:
-            _ , data = rbm.entree_sortie_RBM(data)
-            outputs.append(data)
-        outputs.append(self.calcul_softmax(self.RBMs_list[-1], data))
+            probas, _ = rbm.entree_sortie_RBM(outputs[-1])
+            outputs.append(probas)
+        outputs.append(self.calcul_softmax(self.RBMs_list[-1], outputs[-1]))
         return outputs
 
     def retropropagation(self, data, labels, batch_size=50, epochs=10000, lr_rate=0.01, verbose = True):
