@@ -20,8 +20,11 @@ class RBM():
         self.a = np.zeros(p)
         self.b = np.zeros(q)
 
-    def entree_sortie_RBM(self, input):
-        p_h = sigmoid(input@self.W + self.b)
+    def entree_sortie_RBM(self, input, act='sigmoid'):
+        if act == 'sigmoid':
+            p_h = sigmoid(input@self.W + self.b)
+        else:
+            p_h = softmax(input@self.W + self.b)
         h = 1 * (np.random.rand(*p_h.shape) < p_h)
         return p_h, h
 
@@ -31,12 +34,12 @@ class RBM():
         return p_v, v
 
     def train_RBM(self, data, epochs=10000, learning_rate=0.01, batch_size=50):
-        # Shuffle the data
-        np.random.shuffle(data)
         n_samples = data.shape[0]
         loss = []
 
         for epoch in range(1, epochs + 1):
+            # Shuffle the data
+            np.random.shuffle(data)
             for batch in range(0, n_samples, batch_size):
                 batch_indices = np.arange(batch,
                                           min(batch + batch_size, n_samples))
@@ -61,7 +64,7 @@ class RBM():
             reconstructed_input, _ = self.sortie_entree_RBM(output)
             size = n_samples * self.p
             loss.append(np.sum((reconstructed_input - data)**2) / size)
-            if not(epoch % 500) or epoch == 1:
+            if not(epoch % 5) or epoch == 1:
                 print(f'Epoch {epoch} out of {epochs}, loss: {loss[-1]}')
 
         return self, loss
