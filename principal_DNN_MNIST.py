@@ -58,7 +58,6 @@ class DNN(DBN):
         for idx, pred in enumerate(preds):
             if pred == np.argmax(labels[idx]):
                 good_labels += 1
-        print(good_labels,labels.shape[0])
         if verbose:
             print("The percentage of false labeled data is ",
               100*(labels.shape[0] - good_labels) / labels.shape[0])

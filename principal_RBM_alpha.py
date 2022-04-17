@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
@@ -39,11 +38,12 @@ class RBM():
 
         for epoch in range(1, epochs + 1):
             # Shuffle the data
-            np.random.shuffle(data)
+            data2 = np.copy(data)
+            np.random.shuffle(data2)
             for batch in range(0, n_samples, batch_size):
                 batch_indices = np.arange(batch,
                                           min(batch + batch_size, n_samples))
-                x = data[batch_indices, :]
+                x = data2[batch_indices, :]
                 v0 = x
                 p_hv0, h0 = self.entree_sortie_RBM(v0)
                 p_vh0, v1 = self.sortie_entree_RBM(h0)
@@ -63,7 +63,7 @@ class RBM():
             output, _ = self.entree_sortie_RBM(data)
             reconstructed_input, _ = self.sortie_entree_RBM(output)
             size = n_samples * self.p
-            loss.append(np.sum((reconstructed_input - data)**2) / size)
+            loss.append(np.sum((reconstructed_input - data2)**2) / size)
             if verbose:
                 if not(epoch % 20) or epoch == 1:
                     print(f'Epoch {epoch} out of {epochs}, loss: {loss[-1]}')

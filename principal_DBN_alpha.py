@@ -4,7 +4,6 @@ import numpy as np
 
 
 class DBN():
-
     def __init__(self, neurons):
         self.RBMs_list = []
         for i in range(len(neurons) - 1):
