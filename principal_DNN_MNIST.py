@@ -23,7 +23,7 @@ class DNN(DBN):
         outputs.append(self.calcul_softmax(self.RBMs_list[-1], data))
         return outputs
 
-    def retropropagation(self, data, labels, batch_size=50, epochs=10000, lr_rate=0.01):
+    def retropropagation(self, data, labels, batch_size=50, epochs=10000, lr_rate=0.01, verbose = True):
         n_samples = data.shape[0]
         loss = []
         
@@ -43,8 +43,9 @@ class DNN(DBN):
                     rbm.b -= lr_rate * np.mean(c, axis=0) 
                 loss_batches += cross_entropy(outputs[-1], batch_labels)
             loss.append(np.mean(loss_batches))
-            if not(i % 25) or i == 1:
-                print(f"Epoch {i} out of {epochs}. CELoss value is {loss[-1]}")
+            if verbose:
+                if not(i % 25) or i == 1:
+                    print(f"Epoch {i} out of {epochs}. CELoss value is {loss[-1]}")
         return self, loss
 
     def test_dnn(self, data, labels, verbose = True):

@@ -33,7 +33,7 @@ class RBM():
         v = 1 * (np.random.rand(*p_v.shape) < p_v)
         return p_v, v
 
-    def train_RBM(self, data, epochs=10000, learning_rate=0.01, batch_size=50):
+    def train_RBM(self, data, epochs=10000, learning_rate=0.01, batch_size=50, verbose = True):
         n_samples = data.shape[0]
         loss = []
 
@@ -64,8 +64,9 @@ class RBM():
             reconstructed_input, _ = self.sortie_entree_RBM(output)
             size = n_samples * self.p
             loss.append(np.sum((reconstructed_input - data)**2) / size)
-            if not(epoch % 20) or epoch == 1:
-                print(f'Epoch {epoch} out of {epochs}, loss: {loss[-1]}')
+            if verbose:
+                if not(epoch % 20) or epoch == 1:
+                    print(f'Epoch {epoch} out of {epochs}, loss: {loss[-1]}')
 
         return self, loss
 

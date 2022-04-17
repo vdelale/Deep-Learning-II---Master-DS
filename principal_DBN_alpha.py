@@ -10,10 +10,10 @@ class DBN():
         for i in range(len(neurons) - 1):
             self.RBMs_list.append(RBM(neurons[i], neurons[i+1]))
 
-    def pretrain_DBN(self, data, n_epoch=10000, lr_rate=0.01, batch_size=50):
+    def pretrain_DBN(self, data, n_epoch=10000, lr_rate=0.01, batch_size=50, verbose = True):
         losses = []
         for rbm in self.RBMs_list:
-            rbm, loss = rbm.train_RBM(data, n_epoch, lr_rate, batch_size)
+            rbm, loss = rbm.train_RBM(data, n_epoch, lr_rate, batch_size, verbose = verbose)
             _, data = rbm.entree_sortie_RBM(data)
             losses.append(loss)
         return self, losses
