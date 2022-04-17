@@ -64,7 +64,7 @@ class RBM():
             reconstructed_input, _ = self.sortie_entree_RBM(output)
             size = n_samples * self.p
             loss.append(np.sum((reconstructed_input - data)**2) / size)
-            if not(epoch % 5) or epoch == 1:
+            if not(epoch % 20) or epoch == 1:
                 print(f'Epoch {epoch} out of {epochs}, loss: {loss[-1]}')
 
         return self, loss

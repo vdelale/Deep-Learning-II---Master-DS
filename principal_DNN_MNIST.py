@@ -43,20 +43,28 @@ class DNN(DBN):
                     rbm.b -= lr_rate * np.mean(c, axis=0) 
                 loss_batches += cross_entropy(outputs[-1], batch_labels)
             loss.append(np.mean(loss_batches))
-            if not(i % 5) or i == 1:
+            if not(i % 25) or i == 1:
                 print(f"Epoch {i} out of {epochs}. CELoss value is {loss[-1]}")
         return self, loss
 
-    def test_dnn(self, data, labels):
+    def test_dnn(self, data, labels, verbose = True):
         for rbm in self.RBMs_list[:-1]:
             _, data = rbm.entree_sortie_RBM(data)
         preds = np.argmax(self.calcul_softmax(self.RBMs_list[-1], data),
                           axis=1)
         good_labels = 0
-        print(preds)
+        #print(preds)
         for idx, pred in enumerate(preds):
             if pred == np.argmax(labels[idx]):
                 good_labels += 1
-        print("The percentage of false labeled data is ",
+        print(good_labels,labels.shape[0])
+        if verbose:
+            print("The percentage of false labeled data is ",
               100*(labels.shape[0] - good_labels) / labels.shape[0])
         return 100*(labels.shape[0] - good_labels) / labels.shape[0]
+    
+    def get_pred(self, data):
+        for rbm in self.RBMs_list[:-1]:
+            _, data = rbm.entree_sortie_RBM(data)
+        probs = self.calcul_softmax(self.RBMs_list[-1], data)
+        return(probs)
