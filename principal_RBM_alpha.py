@@ -60,7 +60,7 @@ class RBM():
                 self.b += learning_rate * grad_b
                 self.W += learning_rate * grad_W
 
-            output, _ = self.entree_sortie_RBM(data)
+            output, _ = self.entree_sortie_RBM(data2)
             reconstructed_input, _ = self.sortie_entree_RBM(output)
             size = n_samples * self.p
             loss.append(np.sum((reconstructed_input - data2)**2) / size)
