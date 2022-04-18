@@ -17,9 +17,13 @@ class DBN():
             losses.append(loss)
         return self, losses
 
-    def generer_image_DBN(self, n_imgs, n_iter):
+    def generer_image_DBN(self, n_imgs, n_iter, dataset='alphadigit'):
         fig = plt.figure()
         fig.patch.set_facecolor('black')
+        if dataset == 'alphadigit':
+            shape = (20, 16)
+        elif dataset == 'mnist':
+            shape = (28, 28)
         for i in range(n_imgs):
             data = 1 * (np.random.rand(self.RBMs_list[0].p) < 0.5)
             data = data.reshape(1, data.shape[0])
@@ -29,6 +33,6 @@ class DBN():
                 for rbm in reversed(self.RBMs_list):
                     _, data = rbm.sortie_entree_RBM(data)
             plt.subplot(n_imgs // 5, 5, i + 1)
-            plt.imshow(data.reshape(20, 16), cmap='gray')
+            plt.imshow(data.reshape(shape), cmap='gray')
             plt.axis('off')
         plt.show()

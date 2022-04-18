@@ -70,9 +70,13 @@ class RBM():
 
         return self, loss
 
-    def generer_image_RBM(self, n_imgs, n_iter):
+    def generer_image_RBM(self, n_imgs, n_iter, dataset='alphadigit'):
         fig = plt.figure()
         fig.patch.set_facecolor('black')
+        if dataset == 'alphadigit':
+            shape = (20, 16)
+        elif dataset == 'mnist':
+            shape = (28, 28)
         for i in range(n_imgs):
             v = 1 * (np.random.rand(self.p) < 0.5)
             v = v.reshape(1, v.shape[0])
@@ -80,6 +84,6 @@ class RBM():
                 _, h = self.entree_sortie_RBM(v)
                 _, v = self.sortie_entree_RBM(h)
             plt.subplot(n_imgs // 5, 5, i + 1)
-            plt.imshow(v.reshape(20, 16), cmap='gray')
+            plt.imshow(v.reshape(shape), cmap='gray')
             plt.axis('off')
         plt.show()

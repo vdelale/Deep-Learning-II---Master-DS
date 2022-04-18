@@ -2,8 +2,15 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from torchvision import datasets, transforms
-from torch.autograd import Variable
+from torch.utils.data import TensorDataset, DataLoader
+
+TensorDataset()
+
+def array_to_dataloader(X):
+    tensor_x = torch.Tensor(X)
+    my_dataset = TensorDataset(tensor_x) 
+    my_dataloader = DataLoader(my_dataset)
+    return my_dataloader
 
 class VAE(nn.Module):
     def __init__(self, x_dim, h_dim1, h_dim2, z_dim):
@@ -32,23 +39,23 @@ class VAE(nn.Module):
     def decoder(self, z):
         h = F.relu(self.fc4(z))
         h = F.relu(self.fc5(h))
-        return F.sigmoid(self.fc6(h)) 
+        return torch.sigmoid(self.fc6(h)) 
     
     def forward(self, x):
         mu, log_var = self.encoder(x.view(-1, 784))
         z = self.sampling(mu, log_var)
         return self.decoder(z), mu, log_var
-    
+
 def loss_function(recon_x, x, mu, log_var):
     BCE = F.binary_cross_entropy(recon_x, x.view(-1, 784), reduction='sum')
     KLD = -0.5 * torch.sum(1 + log_var - mu.pow(2) - log_var.exp())
     return BCE + KLD
 
-def train(epoch, verbose = True):
+def train(vae, train_loader, optimizer, epoch, verbose = True):
     vae.train()
     train_loss = 0
-    for batch_idx, (data, _) in enumerate(train_loader):
-        data = data.cuda()
+    for batch_idx, data in enumerate(train_loader):
+        data = data[0]
         optimizer.zero_grad()
         
         recon_batch, mu, log_var = vae(data)
@@ -57,18 +64,18 @@ def train(epoch, verbose = True):
         loss.backward()
         train_loss += loss.item()
         optimizer.step()
-        if verbose:
-            if batch_idx % 100 == 0:
-                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                    epoch, batch_idx * len(data), len(train_loader.dataset),
-                    100. * batch_idx / len(train_loader), loss.item() / len(data)))
+        #if verbose:
+            #if batch_idx % 1000 == 0:
+                #print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                    #epoch, batch_idx * len(data), len(train_loader.dataset),
+                    #100. * batch_idx / len(train_loader), loss.item() / len(data)))
     print('====> Epoch: {} Average loss: {:.4f}'.format(epoch, train_loss / len(train_loader.dataset)))
     
-def test():
+def test(vae, test_loader):
     vae.eval()
     test_loss= 0
     with torch.no_grad():
-        for data, _ in test_loader:
+        for data in test_loader:
             data = data.cuda()
             recon, mu, log_var = vae(data)
             
